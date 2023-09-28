@@ -2,7 +2,9 @@ const http = require('http');
 const fs = require("fs");
 
 http.createServer((request, response) => {
-    let url = new URL(request.url, `http://${request.headers.host}`);
+    console.log(request.url);
+
+    /*let url = new URL(request.url, `http://${request.headers.host}`);
     console.log(url);
     let filePath = "";
 
@@ -11,7 +13,6 @@ http.createServer((request, response) => {
       console.log(filePath);
     } 
 
-    /*
     fs.appendFile(
       "log.txt",
       `URL: ${request.url} \nTimestamp: ${new Date()} \n \n`,
@@ -33,4 +34,4 @@ http.createServer((request, response) => {
       response.write(data);
       response.end("hello node");
     });*/
-  }).listen(3000);
+  }).listen(8080);
