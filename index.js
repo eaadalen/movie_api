@@ -47,7 +47,7 @@ let topMovies= [
 
 app.use(morgan('common'));
 
-app.use(express.static('C:/Users/eaada/Desktop/Bootcamp/P2A2/movie_api'));
+app.use(express.static('public'));
 
 // GET requests
 app.get('/movies', (req, res) => {
