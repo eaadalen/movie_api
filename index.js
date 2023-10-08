@@ -1,8 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const uuid = require('uuid');
 const morgan = require('morgan');
 const app = express();
 
-let topMovies= [
+app.use(bodyParser.json());
+app.use(morgan('common'));
+app.use(express.static('public'));
+
+let movies= [
     {
       title: 'The Adjustment Bureau',
       director: 'George Nolfi'
@@ -45,17 +51,49 @@ let topMovies= [
     }
   ];
 
-app.use(morgan('common'));
-
-app.use(express.static('public'));
-
-// GET requests
+// Gets the full list of movies
 app.get('/movies', (req, res) => {
-  res.json(topMovies);
+  res.send('Successful GET request returning full list of movies');
 });
 
-app.get('/', (req, res) => {
-    res.send('Welcome to my movie club!');
+// Get data about a single movie by name
+app.get('/movies/:name', (req, res) => {
+  res.send('Successful GET request returning data on requested movie: ' + String(req.params.name));
+});
+
+// Get data about a genre by name
+app.get('/genres/:genre', (req, res) => {
+  res.send('Successful GET request returning data on requested genre: ' + String(req.params.genre));
+});
+
+// Get data about a director by name
+app.get('/directors/:director', (req, res) => {
+  res.send('Successful GET request returning data on requested director: ' + String(req.params.director));
+});
+
+// Allow new users to register
+app.post('/users/:username', (req, res) => {
+  res.send("User registration successful");
+});
+
+// Allow users to update their user info
+app.put('/users/:username/info', (req, res) => {
+  res.send("Username successfully updated. New username: " + String(req.params.username));
+});
+
+// Allow users to add a movie to their list of favorites
+app.post('/users/:username/favorites', (req, res) => {
+  res.send("Movie successfully added to favorites list");
+});
+
+// Allow users to remove a movie from their list of favorites
+app.delete('/users/:username/favorites/:movie_to_delete', (req, res) => {
+  res.send(String(req.params.movie_to_delete) + " successfully removed favorites list");
+});
+
+// Allow users to deregister	
+app.delete('/users/:username', (req, res) => {
+  res.send("User deregistration successful");
 });
 
 app.use((err, req, res, next) => {
