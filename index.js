@@ -2,84 +2,174 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const uuid = require('uuid');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+const Movies = Models.Movie;
+const Users = Models.User;
+
 const app = express();
-
 app.use(bodyParser.json());
-app.use(morgan('common'));
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'));
+app.use(morgan('common'));
 
-let movies= [
-    {
-      title: 'The Adjustment Bureau',
-      director: 'George Nolfi'
-    },
-    {
-      title: 'The Dark Knight',
-      director: 'Christopher Nolan'
-    },
-    {
-      title: 'The Dark Knight Rises',
-      director: 'Christopher Nolan'
-    },
-    {
-      title: 'Interstellar',
-      director: 'Christopher Nolan'
-    },
-    {
-      title: 'Palm Springs',
-      director: 'Max Barbakow'
-    },
-    {
-      title: 'Ocean\'s 11',
-      director: 'Steven Soderberg'
-    },
-    {
-      title: 'Donnie Darko',
-      director: 'Richard Kelly'
-    },
-    {
-      title: 'Yesterday',
-      director: 'Danny Boyle'
-    },
-    {
-      title: 'The Internship',
-      director: 'Shawn Levy'
-    },
-    {
-      title: 'Kingsman',
-      director: 'Matthew Vaughn'
-    }
-  ];
+mongoose.connect('mongodb://127.0.0.1:27017/Movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Gets the full list of movies
 app.get('/movies', (req, res) => {
-  res.send('Successful GET request returning full list of movies');
+  Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
 });
 
 // Get data about a single movie by name
 app.get('/movies/:name', (req, res) => {
-  res.send('Successful GET request returning data on requested movie: ' + String(req.params.name));
+  Movies.findOne({ Title: req.params.name })
+      .then((movie) => {
+        res.status(201).json(movie);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
 });
 
 // Get data about a genre by name
 app.get('/genres/:genre', (req, res) => {
-  res.send('Successful GET request returning data on requested genre: ' + String(req.params.genre));
+  Movies.findOne({ "Genre.Name": req.params.genre})
+      .then((genre) => {
+        res.status(201).json(genre.Genre.Description);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
 });
 
 // Get data about a director by name
 app.get('/directors/:director', (req, res) => {
-  res.send('Successful GET request returning data on requested director: ' + String(req.params.director));
+  Movies.findOne({ "Director.Name": req.params.director})
+      .then((director) => {
+        res.status(201).json(director.Director.Bio);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
 });
 
+/*
 // Allow new users to register
-app.post('/users/:username', (req, res) => {
-  res.send("User registration successful");
+app.post('/users', async (req, res) => {
+  await Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});*/
+
+// Get full list of users
+app.get('/users', (req, res) => {
+  Users.find()
+      .then((users) => {
+        res.status(201).json(users);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
 });
 
 // Allow users to update their user info
-app.put('/users/:username/info', (req, res) => {
-  res.send("Username successfully updated. New username: " + String(req.params.username));
+app.put('/users/:username/:info_type/:newinfo', async (req, res) => {
+  console.log(req.params.info_type);
+  console.log(req.params.newinfo);
+  /*if (req.params.info_type == "Username")  {
+    await Users.findOneAndUpdate({ Username: req.params.newinfo }, { $set:
+      {
+        Username: req.body.Username
+      }
+    },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    })
+  }*/
+  if (req.params.info_type == "password")  {
+    await Users.findOneAndUpdate({ password: req.params.newinfo }, { $set:
+      {
+        password: req.params.newinfo
+      }
+    },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    })
+  }/*
+  if (req.params.info_type == "Email")  {
+    await Users.findOneAndUpdate({ Email: req.params.newinfo }, { $set:
+      {
+        Email: req.body.Email
+      }
+    },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    })
+  }
+  if (req.params.info_type == "Birthday")  {
+    await Users.findOneAndUpdate({ Birthday: req.params.newinfo }, { $set:
+      {
+        Birthday: req.body.Birthday
+      }
+    },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    })
+  }*/
+  
 });
+
 
 // Allow users to add a movie to their list of favorites
 app.post('/users/:username/favorites', (req, res) => {
