@@ -63,7 +63,85 @@ app.get('/directors/:director', (req, res) => {
       });
 });
 
-/*
+// Get full list of users
+app.get('/users', (req, res) => {
+  Users.find()
+      .then((users) => {
+        res.status(201).json(users);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+});
+
+// Allow users to update their user info
+app.put('/users/:Username', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }) // This line makes sure that the updated document is returned
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send("Error: " + err);
+  })
+});
+
+// Delete a user by username
+app.delete('/users/:Username', async (req, res) => {
+  await Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// Allow users to add a movie to their list of favorites
+app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }) // This line makes sure that the updated document is returned
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send("Error: " + err);
+  });
+});
+
+// Allow users to remove a movie from their list of favorites
+app.delete('/users/:MovieID', async (req, res) => {
+  await Users.FavoriteMovies.findOneAndRemove( req.params.MovieID )
+    .then((movie) => {
+      if (!movie) {
+        res.status(400).send(req.params.MovieID + ' was not found');
+      } else {
+        res.status(200).send(req.params.MovieID + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
 // Allow new users to register
 app.post('/users', async (req, res) => {
   await Users.findOne({ Username: req.body.Username })
@@ -89,101 +167,6 @@ app.post('/users', async (req, res) => {
       console.error(error);
       res.status(500).send('Error: ' + error);
     });
-});*/
-
-// Get full list of users
-app.get('/users', (req, res) => {
-  Users.find()
-      .then((users) => {
-        res.status(201).json(users);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-});
-
-// Allow users to update their user info
-app.put('/users/:username/:info_type/:newinfo', async (req, res) => {
-  console.log(req.params.info_type);
-  console.log(req.params.newinfo);
-  /*if (req.params.info_type == "Username")  {
-    await Users.findOneAndUpdate({ Username: req.params.newinfo }, { $set:
-      {
-        Username: req.body.Username
-      }
-    },
-    { new: true }) // This line makes sure that the updated document is returned
-    .then((updatedUser) => {
-      res.json(updatedUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    })
-  }*/
-  if (req.params.info_type == "password")  {
-    await Users.findOneAndUpdate({ password: req.params.newinfo }, { $set:
-      {
-        password: req.params.newinfo
-      }
-    },
-    { new: true }) // This line makes sure that the updated document is returned
-    .then((updatedUser) => {
-      res.json(updatedUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    })
-  }/*
-  if (req.params.info_type == "Email")  {
-    await Users.findOneAndUpdate({ Email: req.params.newinfo }, { $set:
-      {
-        Email: req.body.Email
-      }
-    },
-    { new: true }) // This line makes sure that the updated document is returned
-    .then((updatedUser) => {
-      res.json(updatedUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    })
-  }
-  if (req.params.info_type == "Birthday")  {
-    await Users.findOneAndUpdate({ Birthday: req.params.newinfo }, { $set:
-      {
-        Birthday: req.body.Birthday
-      }
-    },
-    { new: true }) // This line makes sure that the updated document is returned
-    .then((updatedUser) => {
-      res.json(updatedUser);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    })
-  }*/
-  
-});
-
-
-// Allow users to add a movie to their list of favorites
-app.post('/users/:username/favorites', (req, res) => {
-  res.send("Movie successfully added to favorites list");
-});
-
-// Allow users to remove a movie from their list of favorites
-app.delete('/users/:username/favorites/:movie_to_delete', (req, res) => {
-  res.send(String(req.params.movie_to_delete) + " successfully removed favorites list");
-});
-
-// Allow users to deregister	
-app.delete('/users/:username', (req, res) => {
-  res.send("User deregistration successful");
 });
 
 app.use((err, req, res, next) => {
