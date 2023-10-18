@@ -9,6 +9,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const app = express();
 const cors = require('cors');
+const port = process.env.PORT || 8080;
 app.use(cors());
 
 /*let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
@@ -217,6 +218,6 @@ app.use((err, req, res, next) => {
 });
 
 // listen for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
-});
+app.listen(port, '0.0.0.0',() => {
+  console.log('Listening on Port ' + port);
+ });
