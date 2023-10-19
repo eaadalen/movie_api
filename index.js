@@ -33,7 +33,9 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
-mongoose.connect('mongodb://127.0.0.1:27017/Movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb://127.0.0.1:27017/Movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Gets the full list of movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {

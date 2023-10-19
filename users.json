@@ -1,0 +1,4 @@
+{"_id":{"$oid":"6525bdaa73a4245ce9d3863c"},"Username":"eaadalen","password":"1234","email":"eaadalen112@gmail.com","birth_date":{"$date":"1998-11-02T00:00:00Z"},"Favorites":[10,11,12]}
+{"_id":{"$oid":"6525bde273a4245ce9d3863e"},"Username":"bmathie","password":"3456","email":"bmathie@gmail.com","birth_date":{"$date":"1998-01-02T00:00:00Z"},"Favorites":[10,11,12]}
+{"_id":{"$oid":"6525bdfd73a4245ce9d3863f"},"Username":"jkautz","password":"4567","email":"jkautz@gmail.com","birth_date":{"$date":"1994-01-02T00:00:00Z"},"Favorites":[6,8,9]}
+{"_id":{"$oid":"6525be1e73a4245ce9d38640"},"Username":"btrantina","password":"5678","email":"btrantina@gmail.com","birth_date":{"$date":"1994-01-03T00:00:00Z"},"Favorites":[10,11,12]}
