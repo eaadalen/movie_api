@@ -11,20 +11,6 @@ const app = express();
 const cors = require('cors');
 const port = process.env.PORT || 8080;
 app.use(cors());
-
-/*let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = "The CORS policy for this application doesn't allow access from origin " + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));*/
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'));
@@ -34,8 +20,13 @@ const passport = require('passport');
 require('./passport');
 
 //mongoose.connect('mongodb://127.0.0.1:27017/Movie_API', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-//mongoose.connect('mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/Movie-API?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Greeting message
+app.get('/', (req, res) => {
+  res.send("Hello");
+});
 
 // Gets the full list of movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
