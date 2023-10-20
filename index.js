@@ -21,8 +21,8 @@ require('./passport');
 
 //mongoose.connect('mongodb://127.0.0.1:27017/Movie_API', { useNewUrlParser: true, useUnifiedTopology: true });     Connect statement for local host
 //mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
-//mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/Movie-API?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/Movie-API?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Greeting message
 app.get('/', (req, res) => {
