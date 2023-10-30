@@ -91,7 +91,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 
 // Delete a user by username
 app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Users.findOneAndRemove({ Username: req.params.Username })
+  await Users.findOneAndRemove({ Username: req.params.Username})
     .then((user) => {
       if (!user) {
         res.status(400).send(req.params.Username + ' was not found');
@@ -104,6 +104,19 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
       res.status(500).send('Error: ' + err);
     });
 });
+
+// Allow users to remove a movie from their list of favorites
+app.delete('/users/:username/favorites/:movieId',passport.authenticate('jwt', {session: false}),(req, res) => {
+    Users.findOneAndUpdate({Username: req.params.username},{$pull: {FavoriteMovies: req.params.movieId}},{new: true})
+    .then((updatedUser) => {
+        res.status(200).json(updatedUser);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    }); 
+  }
+);
 
 // Allow users to add a movie to their list of favorites
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -118,22 +131,6 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
     console.error(err);
     res.status(500).send("Error: " + err);
   });
-});
-
-// Allow users to remove a movie from their list of favorites
-app.delete('/users/:username/movies/:MovieID', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Users.FavoriteMovies.findOneAndRemove( req.params.MovieID )
-    .then((movie) => {
-      if (!movie) {
-        res.status(400).send(req.params.MovieID + ' was not found');
-      } else {
-        res.status(200).send(req.params.MovieID + ' was deleted.');
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
 });
 
 // Allow new users to register
