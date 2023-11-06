@@ -41,9 +41,9 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
       });
 });
 
-// Get data about a single movie by name
-app.get('/movies/:name', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne({ Title: req.params.name })
+// Get data about a single movie by ID
+app.get('/movies/:movieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.findOne({ _id: req.params.movieID })
       .then((movie) => {
         res.status(201).json(movie);
       })
