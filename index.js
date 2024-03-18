@@ -31,6 +31,19 @@ require('./passport');
 
 mongoose.connect("mongodb+srv://eaadalen112:BL_Pgv1aadV8WeF@movie-api.hewzgmc.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
 
+// Authentication example
+// Gets the full list of movies
+//app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+//  Movies.find()
+//      .then((movies) => {
+//        res.status(201).json(movies);
+//      })
+//      .catch((err) => {
+//        console.error(err);
+//        res.status(500).send('Error: ' + err);
+//      });
+//});
+
 // Greeting message
 app.get('/', (req, res) => {
   res.send("Hello");
@@ -49,7 +62,7 @@ app.get('/', (req, res) => {
  * 
  */
 // Gets the full list of movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', (req, res) => {
   Movies.find()
       .then((movies) => {
         res.status(201).json(movies);
@@ -73,7 +86,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
  * 
  */
 // Get data about a single movie by ID
-app.get('/movies/:movieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies/:movieID', (req, res) => {
   Movies.findOne({ _id: req.params.movieID })
       .then((movie) => {
         res.status(201).json(movie);
@@ -97,7 +110,7 @@ app.get('/movies/:movieID', passport.authenticate('jwt', { session: false }), (r
  * 
  */
 // Get data about a genre by name
-app.get('/genres/:genre', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/genres/:genre', (req, res) => {
   Movies.findOne({ "Genre.Name": req.params.genre})
       .then((genre) => {
         res.status(201).json(genre.Genre.Description);
@@ -121,7 +134,7 @@ app.get('/genres/:genre', passport.authenticate('jwt', { session: false }), (req
  * 
  */
 // Get data about a director by name
-app.get('/directors/:director', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/directors/:director', (req, res) => {
   Movies.findOne({ "Director.Name": req.params.director})
       .then((director) => {
         res.status(201).json(director.Director.Bio);
@@ -145,7 +158,7 @@ app.get('/directors/:director', passport.authenticate('jwt', { session: false })
  * 
  */
 // Get full list of users
-app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users', (req, res) => {
   Users.find()
       .then((users) => {
         res.status(201).json(users);
